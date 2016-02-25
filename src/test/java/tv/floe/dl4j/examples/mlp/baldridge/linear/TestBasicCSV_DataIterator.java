@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import tv.floe.dl4j.examples.mlp.baldridge.BasicCSV_DataIterator;
+import tv.floe.dl4j.examples.mlp.baldridge.linear.BasicCSV_DataIterator;
 
 public class TestBasicCSV_DataIterator {
 

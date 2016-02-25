@@ -1,4 +1,4 @@
-package tv.floe.dl4j.examples.mlp.baldridge;
+package tv.floe.dl4j.examples.mlp.baldridge.linear;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
