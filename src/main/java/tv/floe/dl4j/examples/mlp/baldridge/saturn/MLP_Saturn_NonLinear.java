@@ -1,9 +1,8 @@
-package tv.floe.dl4j.examples.mlp.baldridge.linear;
+package tv.floe.dl4j.examples.mlp.baldridge.saturn;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
+import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
@@ -16,18 +15,16 @@ import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.api.IterationListener;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
-//import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
-import org.nd4j.linalg.lossfunctions.LossFunctions;
-import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
-//import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 import org.nd4j.linalg.dataset.DataSet;
-import org.deeplearning4j.datasets.iterator.DataSetIterator;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
+
+import tv.floe.dl4j.examples.mlp.baldridge.linear.BasicCSV_DataIterator;
 
 /**
- * "Linear" Data
+ * "Saturn" Data
  * 
- *    https://github.com/jasonbaldridge/try-tf/blob/master/simdata/linear_data_train.jpg
+ *    https://github.com/jasonbaldridge/try-tf/blob/master/simdata/saturn_data_train.jpg
  *    
  * Based on the data from Jason Baldridge:
  * 
@@ -36,10 +33,10 @@ import org.deeplearning4j.datasets.iterator.DataSetIterator;
  * 
  * 
  * 
- * @author Josh Patterson
+ * @author josh
  *
  */
-public class LinearMLP {
+public class MLP_Saturn_NonLinear {
 
 
     public static void main(String[] args) throws Exception {
@@ -48,18 +45,19 @@ public class LinearMLP {
         int iterations = 10;
         int seed = 123;
         int listenerFreq = iterations/5;
-        double learningRate = 0.01;
-        int nEpochs = 3;
+        double learningRate = 0.005;
+        //Number of epochs (full passes of the data)
+        int nEpochs = 10;
         
         int numInputs = 2;
         int numOutputs = 2;
         int numHiddenNodes = 20;
         
-        
-        DataSetIterator trainIter = new BasicCSV_DataIterator( "src/test/resources/data/baldridge/linear/linear_train.txt", "", 2, 50, 1000 );
+        DataSetIterator trainIter = new BasicCSV_DataIterator( "src/test/resources/data/baldridge/saturn/saturn_train.txt", "", 2, 50, 500 );
 
-        DataSetIterator testIter = new BasicCSV_DataIterator( "src/test/resources/data/baldridge/linear/linear_test.txt", "", 2, 200, 200 );
+        DataSetIterator testIter = new BasicCSV_DataIterator( "src/test/resources/data/baldridge/saturn/saturn_test.txt", "", 2, 100, 100 );
         
+        //log.info("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
         .seed(seed)
         .iterations(iterations)
@@ -82,7 +80,6 @@ public class LinearMLP {
         model.init();
         model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq)));
 
-        
         for ( int n = 0; n < nEpochs; n++) {
         	model.fit( trainIter );
         }
@@ -103,6 +100,6 @@ public class LinearMLP {
         System.out.println(eval.stats());
         System.out.println("****************Example finished********************");
 
-    }	
+    }		
 	
 }

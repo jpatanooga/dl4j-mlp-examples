@@ -21,23 +21,31 @@ import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 import tv.floe.dl4j.examples.mlp.baldridge.linear.BasicCSV_DataIterator;
 
+/**
+ * "Moon" Data
+ * 
+ *    https://github.com/jasonbaldridge/try-tf/blob/master/simdata/moon_data_train.jpg
+ *    
+ * Based on the data from Jason Baldridge:
+ * 
+ * 	https://github.com/jasonbaldridge/try-tf/tree/master/simdata
+ * 
+ * 
+ * 
+ * 
+ * @author Josh Patterson
+ *
+ */
 public class MLP_Moon_NonLinear {
 
 
     public static void main(String[] args) throws Exception {
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
-        final int numRows = 28;
-        final int numColumns = 28;
-        //int outputNum = 2;
-        int numSamples =10000;
         int batchSize = 500;
         int iterations = 10;
         int seed = 123;
         int listenerFreq = iterations/5;
-        int splitTrainNum = (int) (batchSize*.8);
         double learningRate = 0.005;
-        //int iterations = 1;
-        //Number of epochs (full passes of the data)
         int nEpochs = 10;
         
         int numInputs = 2;
@@ -45,13 +53,6 @@ public class MLP_Moon_NonLinear {
         int numHiddenNodes = 20;
         
         
-        DataSet mnist;
-        //SplitTestAndTrain trainTest;
-        DataSet trainInput;
-        //List<INDArray> testInput = new ArrayList<>();
-        //List<INDArray> testLabels = new ArrayList<>();
-
-        //log.info("Load data....");
         DataSetIterator trainIter = new BasicCSV_DataIterator( "src/test/resources/data/baldridge/moon/moon_train.txt", "", 2, 50, 2000 );
 
         DataSetIterator testIter = new BasicCSV_DataIterator( "src/test/resources/data/baldridge/moon/moon_test.txt", "", 2, 200, 1000 );
@@ -79,38 +80,18 @@ public class MLP_Moon_NonLinear {
         model.init();
         model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq)));
 
-       // log.info("Train model....");
-        //model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq)));
-        /*
-        while(trainIter.hasNext()) {
-            mnist = trainIter.next();
-            trainTest = mnist.splitTestAndTrain(splitTrainNum, new Random(seed)); // train set that is the result
-            trainInput = trainTest.getTrain(); // get feature matrix and labels for training
-            testInput.add(trainTest.getTest().getFeatureMatrix());
-            testLabels.add(trainTest.getTest().getLabels());
-            model.fit(trainInput);
-        }
-*/
-        
         for ( int n = 0; n < nEpochs; n++) {
         	model.fit( trainIter );
         }
         
         System.out.println("Evaluate model....");
         Evaluation eval = new Evaluation(numOutputs);
-        /*
-        for(int i = 0; i < testInput.size(); i++) {
-            INDArray output = model.output(testInput.get(i));
-            eval.eval(testLabels.get(i), output);
-        }
-        */
         while(testIter.hasNext()){
             DataSet t = testIter.next();
             INDArray features = t.getFeatureMatrix();
             INDArray lables = t.getLabels();
             INDArray predicted = model.output(features,false);
 
-        //    evaluation.evalTimeSeries(lables,predicted,outMask);
             eval.eval(lables, predicted);
             
         }
